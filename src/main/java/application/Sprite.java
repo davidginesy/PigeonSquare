@@ -7,6 +7,8 @@ import javafx.scene.Node;
 import javafx.scene.layout.Region;
 
 public abstract class Sprite extends Region {
+	
+	
 
     Vector2D location;
     Vector2D velocity;
@@ -56,8 +58,8 @@ public abstract class Sprite extends Region {
 
     
     public void deleteView(Node view) {
-    	getChildren().remove(view);
-    	layer.getChildren().remove(view);
+	    	getChildren().remove(view);
+	    	layer.getChildren().remove(view);
     }
     
     public void applyForce(Vector2D force) {
@@ -101,13 +103,14 @@ public abstract class Sprite extends Region {
     		        	desired = tmp;
     		        	desired.normalize();
     		        	index = i;
+    		        	
     		        }
     	        }
     	        // If we are closer than 10 pixels...the food is eaten
     	        if (d < 10) {
 
     	           /** 
-    	            * Supprime la view et l'objet Attractor lorsqu'il est touché
+    	            * Supprime la view et l'objet Attractor lorsqu'il est touchï¿½
     	            */
     	        	target.get(index).deleteView(target.get(index).view);
     	        	target.remove(index);
@@ -125,10 +128,13 @@ public abstract class Sprite extends Region {
     	        }
     	        return target;
 
-    	        
-
-    	
     }
+    
+    
+    
+    
+    
+    
 
     /**
      * Move sprite towards target
@@ -158,8 +164,12 @@ public abstract class Sprite extends Region {
            /* // ...set the magnitude according to how close we are.
             double m = Utils.map(d, 0, Settings.SPRITE_SLOW_DOWN_DISTANCE, 0, maxSpeed);
             desired.multiply(m);*/
-        	target.get(index).deleteView(target.get(index).view);
-        	target.remove(index);
+        	
+        	
+        	//target.get(index).deleteView(target.get(index).view);
+        	
+        //target.remove(index);
+       
         } 
         // Otherwise, proceed at maximum speed.
         else {

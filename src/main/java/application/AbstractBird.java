@@ -5,9 +5,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 
-public class Vehicle extends Sprite {
+public class AbstractBird extends Sprite {
 
-    public Vehicle(Layer layer, Vector2D location, Vector2D velocity, Vector2D acceleration, double width, double height) {
+    public AbstractBird(Layer layer, Vector2D location, Vector2D velocity, Vector2D acceleration, double width, double height) {
         super(layer, location, velocity, acceleration, width, height);
     }
 

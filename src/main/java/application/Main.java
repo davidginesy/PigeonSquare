@@ -1,8 +1,11 @@
 package application;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -12,17 +15,19 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-public class Main extends Application {
+public class Main extends Application /*implements Runnable*/{
 
     static Random random = new Random();
     boolean isMovementRandom = false;
     long start;
     long elapsedTimeMillis;
+    long lifeTime =1500;
     
     Layer playfield;
 
     List<Attractor> allAttractors = new ArrayList<>();
-    List<Vehicle> allVehicles = new ArrayList<>();
+    List<Bird> allBird = new ArrayList<>();
+ 
 
     AnimationTimer gameLoop;
 
@@ -61,6 +66,8 @@ public class Main extends Application {
         
         // run animation loop
         startGame();
+        
+
 
 
     }
@@ -68,10 +75,10 @@ public class Main extends Application {
     private void prepareGame() {
 
         // add vehicles
-        for( int i = 0; i < Settings.VEHICLE_COUNT; i++) {
-            addVehicles();
+        for( int i = 0; i < Settings.BIRD_COUNT; i++) {
+            addBird();
         }
-        allVehicles.forEach(Sprite::display);
+        allBird.forEach(Sprite::display);
         
         // add attractors
        /* for( int i = 0; i < Settings.ATTRACTOR_COUNT; i++) {
@@ -81,7 +88,78 @@ public class Main extends Application {
 
     }
 
+    
     private void startGame() {
+    	
+	   
+	
+	    	Thread pigeon1 = new Thread() {
+		    	    public void run() {
+		    	    	synchronized(allAttractors) {
+		    	    		
+			    	    			// Access shared variables and other shared resources
+			        	    		//allAttractors = allBird.get(0).seekRandom( allAttractors);
+				        	    		while(true) {
+			        	    			allAttractors = allBird.get(1).seek(allAttractors);
+			        	    			allBird.get(1).move();
+			        	            //if(!allAttractors.isEmpty()) allBird.forEach(Sprite::move);
+			        	    			allBird.get(1).display();
+			        	    			allAttractors.forEach(Sprite::display);
+			        	    			//System.out.println(allAttractors.toString());
+			        	    			System.out.println("dans le pigeon 1");
+			        	    			try {
+											sleep(16);
+										} catch (InterruptedException e) {
+											e.printStackTrace();
+										}
+		    	    			}
+		    	    		}
+		    	    }
+		    	};
+		  
+		  
+	    	
+	    	
+	
+	    pigeon1.start();
+	   
+	
+	    
+	  
+	    	
+	    	
+	    	// start game
+	        gameLoop = new AnimationTimer() {
+	
+				@Override
+				public void handle(long now) {
+					
+				
+					for(int i = 0; i<allAttractors.size(); i++) {
+						
+						if(allAttractors.get(i).checkEaten(allBird)||(Calendar.getInstance().getTimeInMillis()-allAttractors.get(i).millisStart)>lifeTime) {
+							
+							allAttractors.get(0).deleteView(allAttractors.get(0).view);
+							allAttractors.remove(0);
+						}
+						
+					}
+					
+				}
+	        	
+	        };
+	        gameLoop.start();
+
+    }
+    
+    
+    
+    
+    
+    
+    
+    //NO thread version:
+   /* private void startGame() {
 
         // start game
         gameLoop = new AnimationTimer() {
@@ -89,19 +167,18 @@ public class Main extends Application {
             @Override
             public void handle(long now) {
             	
-            	
-    
-            	if(isMovementRandom && (System.currentTimeMillis() - start)/1000F < 0.5){
-            		allVehicles.forEach(vehicle -> {
+            		
+            		allBird.forEach(bird -> {
 
-                        allAttractors = vehicle.seekRandom( allAttractors);
-
+                        allAttractors = bird.seekRandom( allAttractors);
+                       
                     });
             		
-            	}
+    
+   
                 // seek attractor location, apply force to get towards it
-            	else{
-            		allVehicles.forEach(vehicle -> {
+          
+            		allBird.forEach(vehicle -> {
             			
             			allAttractors = vehicle.seek( allAttractors);
 
@@ -109,15 +186,15 @@ public class Main extends Application {
             		if(isMovementRandom) {
             			isMovementRandom = false;          			
             		}
-            	}
+            	
 
-                    
+                  
 
                 // move sprite
-                if(!allAttractors.isEmpty()) allVehicles.forEach(Sprite::move);
+                if(!allAttractors.isEmpty()) allBird.forEach(Sprite::move);
 
                 // update in fx scene
-                allVehicles.forEach(Sprite::display);
+                allBird.forEach(Sprite::display);
                 allAttractors.forEach(Sprite::display);
 
             }
@@ -125,12 +202,12 @@ public class Main extends Application {
 
         gameLoop.start();
 
-    }
+    }*/
 
     /**
      * Add single vehicle to list of vehicles and to the playfield
      */
-    private void addVehicles() {
+    private void addBird() {
 
         Layer layer = playfield;
 
@@ -142,16 +219,16 @@ public class Main extends Application {
         double width = 50;
         double height = width / 2.0;
 
-        // create vehicle data
+        // create bird data
         Vector2D location = new Vector2D( x,y);
         Vector2D velocity = new Vector2D( 0,0);
         Vector2D acceleration = new Vector2D( 0,0);
 
         // create sprite and add to layer
-        Vehicle vehicle = new Vehicle( layer, location, velocity, acceleration, width, height);
+        Bird bird = new Bird( layer, location, velocity, acceleration, width, height);
 
         // register vehicle
-        allVehicles.add(vehicle);
+        allBird.add(bird);
 
     }
 

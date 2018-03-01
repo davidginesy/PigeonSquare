@@ -7,7 +7,7 @@ public class Settings {
     public static double SCENE_HEIGHT = 720;
 
     public static int ATTRACTOR_COUNT = 10;
-    public static int VEHICLE_COUNT = 10;
+    public static int BIRD_COUNT = 10;
 
     public static double SPRITE_MAX_SPEED = 10;
     public static double SPRITE_MAX_FORCE = 0.5;

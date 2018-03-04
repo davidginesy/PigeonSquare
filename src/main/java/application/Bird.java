@@ -4,16 +4,30 @@ import java.util.List;
 
 import org.omg.CORBA.SystemException;
 
+import javafx.scene.Node;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+
 public class Bird extends AbstractBird implements Runnable {
 
 	//Message msg;
 	SharedAttractors sharedAttractors;
 
 	
-	public Bird(Layer layer, Vector2D location, Vector2D velocity, Vector2D acceleration, double width, double height,SharedAttractors sharedList) {
-		super(layer, location, velocity, acceleration, width, height);
+	public Bird(Layer layer, Vector2D location, Vector2D velocity, Vector2D acceleration, double width, double height,SharedAttractors sharedList, double maxSpeed) {
+		super(layer, location, velocity, acceleration, width, height,  maxSpeed);
 		this.sharedAttractors = sharedList;
 	}
+	
+	 @Override
+	    public Node createView() {
+	    	Rectangle rectangle = new Rectangle();
+	    	rectangle.setHeight(height);
+	    	rectangle.setWidth(height);
+	    	rectangle.setStroke(Color.ORANGE);
+	        rectangle.setFill(Color.BLACK);
+	    	return Utils.createArrowImageView(width, Color.GREY);
+	    }
 
 
 
@@ -38,25 +52,6 @@ public class Bird extends AbstractBird implements Runnable {
 			}	
 		}
 		
-		/*synchronized(msg.allAttractors) {
-    		
-			// Access shared variables and other shared resources
-    		//allAttractors = allBird.get(0).seekRandom( allAttractors);
-	    		while(true) {
-	    			msg.allAttractors = msg.allBird.get(1).seek(msg.allAttractors);
-	    			msg.allBird.get(1).move();
-	    			//if(!allAttractors.isEmpty()) allBird.forEach(Sprite::move);
-	    			msg.allBird.get(1).display();
-	    			msg.allAttractors.forEach(Sprite::display);
-	    			System.out.println(msg.allAttractors.toString());
-	    			System.out.println("dans le pigeon 2");
-	    			try {
-	    					wait(16);
-	    				} catch (InterruptedException e) {
-	    					e.printStackTrace();
-	    				}
-	    		}
-		}*/
 	}
 		
 	

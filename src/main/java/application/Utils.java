@@ -23,9 +23,9 @@ public class Utils {
      * @param height
      * @return
      */
-    public static ImageView createArrowImageView( double size) {
+    public static ImageView createArrowImageView( double size, Color color) {
 
-        return createArrowImageView(size, size / 2.0, Color.BLUE, Color.BLUE.deriveColor(1, 1, 1, 0.3), 1);
+        return createArrowImageView(size, size / 2.0, Color.BLACK, color.deriveColor(1, 1, 1, 0.3), 1);
 
     }
 

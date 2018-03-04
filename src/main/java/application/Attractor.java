@@ -13,7 +13,7 @@ public class Attractor extends Sprite {
 	long millisStart = Calendar.getInstance().getTimeInMillis();
 
     public Attractor(Layer layer, Vector2D location, Vector2D velocity, Vector2D acceleration, double width, double height) {
-        super(layer, location, velocity, acceleration, width, height);
+        super(layer, location, velocity, acceleration, width, height,0);
     }
 
     @Override
@@ -33,8 +33,10 @@ public class Attractor extends Sprite {
     }
     
     
+    
+    
     //this method check if the current attractor was eat by a bird
-    public boolean checkEaten(List<Bird> allBird) {
+    public boolean checkEaten(List<AbstractBird> allBird) {
 
     	for(int i = 0; i<allBird.size(); i++) {
     		

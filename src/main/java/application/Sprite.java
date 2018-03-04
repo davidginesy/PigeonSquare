@@ -15,7 +15,7 @@ public abstract class Sprite extends Region {
     Vector2D acceleration;
 
     double maxForce = Settings.SPRITE_MAX_FORCE;
-    double maxSpeed = Settings.SPRITE_MAX_SPEED;
+    double maxSpeed;
 
     Node view;
 
@@ -30,9 +30,11 @@ public abstract class Sprite extends Region {
 
     Layer layer = null;
 
-    public Sprite( Layer layer, Vector2D location, Vector2D velocity, Vector2D acceleration, double width, double height) {
+    public Sprite( Layer layer, Vector2D location, Vector2D velocity, Vector2D acceleration, double width, double height, double maxSpeed) {
 
         this.layer = layer; 
+        
+        this.maxSpeed = maxSpeed;
 
         this.location = location;
         this.velocity = velocity;

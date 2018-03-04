@@ -7,11 +7,11 @@ import java.util.List;
 public class SharedAttractors {
 	
 	List<Attractor> syncAttractor = Collections.synchronizedList(new ArrayList<Attractor>());
-	List<Bird> syncBird = Collections.synchronizedList(new ArrayList<Bird>());
+	List<AbstractBird> syncBird = Collections.synchronizedList(new ArrayList<AbstractBird>());
 	
-	public SharedAttractors(List<Attractor> syncAttractor,List<Bird> syncBird ) {
+	public SharedAttractors(List<Attractor> syncAttractor,List<AbstractBird> allBird ) {
 		this.syncAttractor = syncAttractor;
-		this.syncBird = syncBird;
+		this.syncBird = allBird;
 	}
 
 	public void addAttractor(Attractor a) {
@@ -46,7 +46,7 @@ public class SharedAttractors {
 		}		
 	}
 	
-	public List<Bird> getBirds() {
+	public List<AbstractBird> getBirds() {
 		synchronized(syncBird) {
 			return syncBird;
 		}

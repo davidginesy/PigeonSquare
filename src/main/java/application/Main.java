@@ -13,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class Main extends Application /*implements Runnable*/{
@@ -26,7 +27,8 @@ public class Main extends Application /*implements Runnable*/{
     Layer playfield;
     
     List<Attractor> allAttractors = new ArrayList<>();
-    List<Bird> allBird = new ArrayList<>();
+    List<AttractorOld> allAttractorsOld = new ArrayList<>();
+    List<AbstractBird> allBird = new ArrayList<>();
     SharedAttractors sharedList = new SharedAttractors(allAttractors, allBird);
 
     AnimationTimer gameLoop;
@@ -74,10 +76,23 @@ public class Main extends Application /*implements Runnable*/{
 
     private void prepareGame() {
 
-        // add vehicles
-        for( int i = 0; i < Settings.BIRD_COUNT; i++) {
-            addBird();
+        // add bird
+    		for( int i = 0; i < 5; i++) {
+            addSpecificBird(2);
         }
+     	for( int i = 0; i < 5; i++) {
+            addSpecificBird1(4);
+        }
+     	for( int i = 0; i < 5; i++) {
+            addSpecificBird2(6);
+        }
+    	
+    	
+        /*for( int i = 0; i < Settings.BIRD_COUNT; i++) {
+            addBird();
+        }*/
+    	
+    	
         //allBird.forEach(Sprite::display);
         // add attractors
        /* for( int i = 0; i < Settings.ATTRACTOR_COUNT; i++) {
@@ -92,44 +107,8 @@ public class Main extends Application /*implements Runnable*/{
     	
     	//System.out.println("nb thread : "+Thread.activeCount());
     	allBird.forEach(Sprite::display);
-        allAttractors.forEach(Sprite::display);
-	/*for(int i = 0 ; i< Settings.BIRD_COUNT; i++) {
-			final int k = i;
-	    	Thread pigeon = new Thread() {
-	    			
-		    	    public void run() {
-		    	    	int j = k;
-		    	    	System.out.println("j "+j+" k "+k);
-		    	    	synchronized(allAttractors) {
-		    	    		
-			    	    			// Access shared variables and other shared resources
-			        	    		//allAttractors = allBird.get(0).seekRandom( allAttractors);
-				        	    		while(true) {
-			        	    			allBird.get(j).seek(allAttractors);
-			        	    			allBird.get(j).move();
-			        	            //if(!allAttractors.isEmpty()) allBird.forEach(Sprite::move);
-			        	    			allBird.get(j).display();
-			        	    			allAttractors.forEach(Sprite::display);
-			        	    			//System.out.println(allAttractors.toString());
-			        	    			
-			        	    			try {
-											sleep(16);
-										} catch (InterruptedException e) {
-											e.printStackTrace();
-										}
-		    	    			}
-		    	    		}
-		    	    }
-		    	};
-	
-		  
-	    	
-	    	
-	
-	    pigeon.start();
-	   
-	}*/
-	    
+    allAttractors.forEach(Sprite::display);
+
 	  
 	    	
 	    	
@@ -143,14 +122,35 @@ public class Main extends Application /*implements Runnable*/{
 			        allAttractors.forEach(Sprite::display);
 					for(int i = 0; i<allAttractors.size(); i++) {
 						
-						if(allAttractors.get(i).checkEaten(allBird)||(Calendar.getInstance().getTimeInMillis()-allAttractors.get(i).millisStart)>lifeTime) {
+						if(allAttractors.get(i).checkEaten(allBird)) {
+							
+							//addAttractorsOld(allAttractors.get(0).location.x,allAttractors.get(0).location.y);
 							
 							allAttractors.get(0).deleteView(allAttractors.get(0).view);
 							allAttractors.remove(0);
 							
 							sharedList.deleteAttractor(0);
 						}
-						
+						if(!allAttractors.isEmpty()) {
+							if((Calendar.getInstance().getTimeInMillis()-allAttractors.get(i).millisStart)>lifeTime) {
+								
+								addAttractorsOld(allAttractors.get(0).location.x,allAttractors.get(0).location.y);
+								
+								allAttractors.get(0).deleteView(allAttractors.get(0).view);
+								allAttractors.remove(0);
+							
+							}
+						}	
+					}
+					
+					for(int i = 0; i<allAttractorsOld.size(); i++) {
+						if((Calendar.getInstance().getTimeInMillis()-allAttractorsOld.get(i).millisStart)>lifeTime) {
+							
+							allAttractorsOld.get(i).deleteView(allAttractorsOld.get(i).view);
+							allAttractorsOld.remove(i);
+							
+							
+						}
 					}
 					
 				}
@@ -166,54 +166,9 @@ public class Main extends Application /*implements Runnable*/{
     
     
     
-    //NO thread version:
-   /* private void startGame() {
-
-        // start game
-        gameLoop = new AnimationTimer() {
-
-            @Override
-            public void handle(long now) {
-            	
-            		
-            		allBird.forEach(bird -> {
-
-                        allAttractors = bird.seekRandom( allAttractors);
-                       
-                    });
-            		
-    
-   
-                // seek attractor location, apply force to get towards it
-          
-            		allBird.forEach(vehicle -> {
-            			
-            			allAttractors = vehicle.seek( allAttractors);
-
-            		});
-            		if(isMovementRandom) {
-            			isMovementRandom = false;          			
-            		}
-            	
-
-                  
-
-                // move sprite
-                if(!allAttractors.isEmpty()) allBird.forEach(Sprite::move);
-
-                // update in fx scene
-                allBird.forEach(Sprite::display);
-                allAttractors.forEach(Sprite::display);
-
-            }
-        };
-
-        gameLoop.start();
-
-    }*/
-
+  
     /**
-     * Add single vehicle to list of vehicles and to the playfield
+     * Add single vehicle to list of bird and to the playfield
      */
     private void addBird() {
 
@@ -233,15 +188,96 @@ public class Main extends Application /*implements Runnable*/{
         Vector2D acceleration = new Vector2D( 0,0);
 
         // create sprite and add to layer
-        Bird bird = new Bird( layer, location, velocity, acceleration, width, height, sharedList);
+        Bird bird = new Bird( layer, location, velocity, acceleration, width, height, sharedList, Settings.SPRITE_MAX_FORCE);
         allBird.add(bird);
         Thread t = new Thread(bird);
         t.start();
         // register vehicle
-        
+       
 
     }
 
+    private void addSpecificBird(int maxSpeed) {
+
+        Layer layer = playfield;
+
+        // random location
+        double x = random.nextDouble() * layer.getWidth();
+        double y = random.nextDouble() * layer.getHeight();
+
+        // dimensions
+        double width = 50;
+        double height = width / 2.0;
+
+        // create bird data
+        Vector2D location = new Vector2D( x,y);
+        Vector2D velocity = new Vector2D( 0,0);
+        Vector2D acceleration = new Vector2D( 0,0);
+
+        // create sprite and add to layer
+        Bird bird = new Bird( layer, location, velocity, acceleration, width, height, sharedList, maxSpeed);
+        allBird.add(bird);
+        Thread t = new Thread(bird);
+        t.start();
+        // register vehicle
+      
+    }
+    
+    private void addSpecificBird1(int maxSpeed) {
+
+        Layer layer = playfield;
+
+        // random location
+        double x = random.nextDouble() * layer.getWidth();
+        double y = random.nextDouble() * layer.getHeight();
+
+        // dimensions
+        double width = 50;
+        double height = width / 2.0;
+
+        // create bird data
+        Vector2D location = new Vector2D( x,y);
+        Vector2D velocity = new Vector2D( 0,0);
+        Vector2D acceleration = new Vector2D( 0,0);
+
+        // create sprite and add to layer
+        Bird1 bird = new Bird1( layer, location, velocity, acceleration, width, height, sharedList, maxSpeed);
+        allBird.add(bird);
+        Thread t = new Thread(bird);
+        t.start();
+        // register vehicle
+       
+
+    }
+    
+    private void addSpecificBird2(int maxSpeed) {
+
+        Layer layer = playfield;
+
+        // random location
+        double x = random.nextDouble() * layer.getWidth();
+        double y = random.nextDouble() * layer.getHeight();
+
+        // dimensions
+        double width = 50;
+        double height = width / 2.0;
+
+        // create bird data
+        Vector2D location = new Vector2D( x,y);
+        Vector2D velocity = new Vector2D( 0,0);
+        Vector2D acceleration = new Vector2D( 0,0);
+
+        // create sprite and add to layer
+        Bird2 bird = new Bird2( layer, location, velocity, acceleration, width, height, sharedList, maxSpeed);
+        allBird.add(bird);
+        Thread t = new Thread(bird);
+        t.start();
+        // register vehicle
+       
+
+    }
+    
+    
     private void addAttractors(double x, double y) {
 
         Layer layer = playfield;
@@ -268,6 +304,32 @@ public class Main extends Application /*implements Runnable*/{
         allAttractors.forEach(Sprite::display);
     }
 
+    private void addAttractorsOld(double x, double y) {
+
+        Layer layer = playfield;
+
+        /*// center attractor
+        double x = layer.getWidth() / 2;
+        double y = layer.getHeight() / 2;
+*/
+        // dimensions
+        double width = 25;
+        double height = 25;
+
+        // create attractor data
+        Vector2D location = new Vector2D( x,y);
+        Vector2D velocity = new Vector2D( 0,0);
+        Vector2D acceleration = new Vector2D( 0,0);
+
+        // create attractor and add to layer
+        AttractorOld attractorOld = new AttractorOld( layer, location, velocity, acceleration, width, height);
+
+        // register sprite
+        allAttractorsOld.add(attractorOld);
+        //sharedList.addAttractorOld(attractor);
+        allAttractorsOld.forEach(Sprite::display);
+    }
+    
     private void addListeners() {
 
         // capture mouse position

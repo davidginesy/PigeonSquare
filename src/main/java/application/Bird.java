@@ -1,14 +1,18 @@
 package application;
 
+import java.util.List;
+
+import org.omg.CORBA.SystemException;
+
 public class Bird extends AbstractBird implements Runnable {
 
-	Message msg;
-	
+	//Message msg;
+	SharedAttractors sharedAttractors;
 
 	
-	public Bird(Layer layer, Vector2D location, Vector2D velocity, Vector2D acceleration, double width, double height) {
+	public Bird(Layer layer, Vector2D location, Vector2D velocity, Vector2D acceleration, double width, double height,SharedAttractors sharedList) {
 		super(layer, location, velocity, acceleration, width, height);
-		// TODO Auto-generated constructor stub
+		this.sharedAttractors = sharedList;
 	}
 
 
@@ -17,7 +21,24 @@ public class Bird extends AbstractBird implements Runnable {
 	
 	@Override
 	public void run() {
-		synchronized(msg.allAttractors) {
+		while(true) {
+			//List<Bird> allBird = sharedAttractors.getBirds();
+			List<Attractor> allAttractors = sharedAttractors.getAttractors();
+			seek(allAttractors);
+			move();
+			try {
+				
+				
+				//System.out.println(Thread.currentThread().getName());
+				
+				Thread.sleep(16);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}	
+		}
+		
+		/*synchronized(msg.allAttractors) {
     		
 			// Access shared variables and other shared resources
     		//allAttractors = allBird.get(0).seekRandom( allAttractors);
@@ -35,7 +56,7 @@ public class Bird extends AbstractBird implements Runnable {
 	    					e.printStackTrace();
 	    				}
 	    		}
-		}
+		}*/
 	}
 		
 	

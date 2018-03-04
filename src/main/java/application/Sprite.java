@@ -57,7 +57,7 @@ public abstract class Sprite extends Region {
     public abstract Node createView();
 
     
-    public void deleteView(Node view) {
+    public synchronized void deleteView(Node view) {
 	    	getChildren().remove(view);
 	    	layer.getChildren().remove(view);
     }
@@ -66,7 +66,7 @@ public abstract class Sprite extends Region {
         acceleration.add(force);
     }
 
-    public void move() {
+    public synchronized void move() {
 
         // set velocity depending on acceleration
         velocity.add(acceleration);
@@ -139,9 +139,9 @@ public abstract class Sprite extends Region {
     /**
      * Move sprite towards target
      */
-    public List<Attractor> seek(List<Attractor> target) {
+    public void seek(List<Attractor> target) {
     	
-    	int index = -1;
+
     	double d=9999;
     	Vector2D desired = new Vector2D(0, 0); 
     	for(int i = 0; i<target.size(); i++) {
@@ -155,32 +155,18 @@ public abstract class Sprite extends Region {
 	        	d = tmp.magnitude();
 	        	desired = tmp;
 	        	desired.normalize();
-	        	index = i;
+	        
 	        }
         }
-        // If we are closer than 10 pixels...the food is eaten
-        if (d < 10) {
-
-           /* // ...set the magnitude according to how close we are.
-            double m = Utils.map(d, 0, Settings.SPRITE_SLOW_DOWN_DISTANCE, 0, maxSpeed);
-            desired.multiply(m);*/
-        	
-        	
-        	//target.get(index).deleteView(target.get(index).view);
-        	
-        //target.remove(index);
-       
-        } 
-        // Otherwise, proceed at maximum speed.
-        else {
-            desired.multiply(maxSpeed);
-            // The usual steering = desired - velocity
+        
+        desired.multiply(maxSpeed);
+        // The usual steering = desired - velocity
         Vector2D steer = Vector2D.subtract(desired, velocity);
         steer.limit(maxForce);
        
         applyForce(steer);
-        }
-        return target;
+        
+        
 
         
 
@@ -189,7 +175,7 @@ public abstract class Sprite extends Region {
     /**
      * Update node position
      */
-    public void display() {
+    public synchronized void display() {
 
         relocate(location.x - centerX, location.y - centerY);
 

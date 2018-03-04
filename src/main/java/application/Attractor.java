@@ -33,7 +33,7 @@ public class Attractor extends Sprite {
     }
     
     
-    //this method check if the current attractor was eat by an bird
+    //this method check if the current attractor was eat by a bird
     public boolean checkEaten(List<Bird> allBird) {
 
     	for(int i = 0; i<allBird.size(); i++) {

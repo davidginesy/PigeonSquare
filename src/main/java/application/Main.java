@@ -24,10 +24,10 @@ public class Main extends Application /*implements Runnable*/{
     long lifeTime =1500;
     
     Layer playfield;
-
+    
     List<Attractor> allAttractors = new ArrayList<>();
     List<Bird> allBird = new ArrayList<>();
- 
+    SharedAttractors sharedList = new SharedAttractors(allAttractors, allBird);
 
     AnimationTimer gameLoop;
 
@@ -78,8 +78,7 @@ public class Main extends Application /*implements Runnable*/{
         for( int i = 0; i < Settings.BIRD_COUNT; i++) {
             addBird();
         }
-        allBird.forEach(Sprite::display);
-        
+        //allBird.forEach(Sprite::display);
         // add attractors
        /* for( int i = 0; i < Settings.ATTRACTOR_COUNT; i++) {
             addAttractors();
@@ -91,22 +90,28 @@ public class Main extends Application /*implements Runnable*/{
     
     private void startGame() {
     	
-	   
-	
-	    	Thread pigeon1 = new Thread() {
+    	//System.out.println("nb thread : "+Thread.activeCount());
+    	allBird.forEach(Sprite::display);
+        allAttractors.forEach(Sprite::display);
+	/*for(int i = 0 ; i< Settings.BIRD_COUNT; i++) {
+			final int k = i;
+	    	Thread pigeon = new Thread() {
+	    			
 		    	    public void run() {
+		    	    	int j = k;
+		    	    	System.out.println("j "+j+" k "+k);
 		    	    	synchronized(allAttractors) {
 		    	    		
 			    	    			// Access shared variables and other shared resources
 			        	    		//allAttractors = allBird.get(0).seekRandom( allAttractors);
 				        	    		while(true) {
-			        	    			allAttractors = allBird.get(1).seek(allAttractors);
-			        	    			allBird.get(1).move();
+			        	    			allBird.get(j).seek(allAttractors);
+			        	    			allBird.get(j).move();
 			        	            //if(!allAttractors.isEmpty()) allBird.forEach(Sprite::move);
-			        	    			allBird.get(1).display();
+			        	    			allBird.get(j).display();
 			        	    			allAttractors.forEach(Sprite::display);
 			        	    			//System.out.println(allAttractors.toString());
-			        	    			System.out.println("dans le pigeon 1");
+			        	    			
 			        	    			try {
 											sleep(16);
 										} catch (InterruptedException e) {
@@ -116,14 +121,14 @@ public class Main extends Application /*implements Runnable*/{
 		    	    		}
 		    	    }
 		    	};
-		  
+	
 		  
 	    	
 	    	
 	
-	    pigeon1.start();
+	    pigeon.start();
 	   
-	
+	}*/
 	    
 	  
 	    	
@@ -134,13 +139,16 @@ public class Main extends Application /*implements Runnable*/{
 				@Override
 				public void handle(long now) {
 					
-				
+					allBird.forEach(Sprite::display);
+			        allAttractors.forEach(Sprite::display);
 					for(int i = 0; i<allAttractors.size(); i++) {
 						
 						if(allAttractors.get(i).checkEaten(allBird)||(Calendar.getInstance().getTimeInMillis()-allAttractors.get(i).millisStart)>lifeTime) {
 							
 							allAttractors.get(0).deleteView(allAttractors.get(0).view);
 							allAttractors.remove(0);
+							
+							sharedList.deleteAttractor(0);
 						}
 						
 					}
@@ -225,10 +233,12 @@ public class Main extends Application /*implements Runnable*/{
         Vector2D acceleration = new Vector2D( 0,0);
 
         // create sprite and add to layer
-        Bird bird = new Bird( layer, location, velocity, acceleration, width, height);
-
-        // register vehicle
+        Bird bird = new Bird( layer, location, velocity, acceleration, width, height, sharedList);
         allBird.add(bird);
+        Thread t = new Thread(bird);
+        t.start();
+        // register vehicle
+        
 
     }
 
@@ -254,7 +264,8 @@ public class Main extends Application /*implements Runnable*/{
 
         // register sprite
         allAttractors.add(attractor);
-
+        sharedList.addAttractor(attractor);
+        allAttractors.forEach(Sprite::display);
     }
 
     private void addListeners() {

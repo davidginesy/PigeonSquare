@@ -82,7 +82,7 @@ public class Main extends Application /*implements Runnable*/{
             addSpecificBird(2);
         }
      	for( int i = 0; i < 5; i++) {
-            addSpecificBird1(4);
+            addSpecificBird1(3);
         }
      	for( int i = 0; i < 5; i++) {
             addSpecificBird2(6);

@@ -29,6 +29,9 @@ public abstract class Sprite extends Region {
     double angle;
 
     Layer layer = null;
+    
+    long start;
+    long lifeTime = 5000;
 
     public Sprite( Layer layer, Vector2D location, Vector2D velocity, Vector2D acceleration, double width, double height, double maxSpeed) {
 
@@ -88,9 +91,9 @@ public abstract class Sprite extends Region {
     /**
      * Move Sprite randomly
      */
-    public List<Attractor> seekRandom(List<Attractor> target){
+    public void seekRandom(List<Attractor> target){
     	    	Random rdm = new Random();
-    	    	int index = -1;
+    	    	
     	    	double d=9999;
     	    	Vector2D desired = new Vector2D(0, 0); 
     	    	for(int i = 0; i<target.size(); i++) {
@@ -104,22 +107,14 @@ public abstract class Sprite extends Region {
     		        	d = tmp.magnitude();
     		        	desired = tmp;
     		        	desired.normalize();
-    		        	index = i;
+    		        	
     		        	
     		        }
     	        }
-    	        // If we are closer than 10 pixels...the food is eaten
-    	        if (d < 10) {
-
-    	           /** 
-    	            * Supprime la view et l'objet Attractor lorsqu'il est touch�
-    	            */
-    	        	target.get(index).deleteView(target.get(index).view);
-    	        	target.remove(index);
-    	        } 
+    	        
     	        // Otherwise, proceed at maximum speed.
-    	        else {
-    	            desired.multiply(maxSpeed);
+    	        
+    	        desired.multiply(maxSpeed);
     	            // The usual steering = desired - velocity
     	        Vector2D steer = Vector2D.subtract(desired, velocity);
     	        steer.x = -steer.x * rdm.nextFloat();
@@ -127,9 +122,7 @@ public abstract class Sprite extends Region {
     	        steer.limit(maxForce);
     	       
     	        applyForce(steer);
-    	        }
-    	        return target;
-
+    	        
     }
     
     
@@ -143,7 +136,8 @@ public abstract class Sprite extends Region {
      */
     public void seek(List<Attractor> target) {
     	
-
+    	Random rdm = new Random();
+    	boolean isMovementRandom = false;
     	double d=9999;
     	Vector2D desired = new Vector2D(0, 0); 
     	for(int i = 0; i<target.size(); i++) {
@@ -157,16 +151,38 @@ public abstract class Sprite extends Region {
 	        	d = tmp.magnitude();
 	        	desired = tmp;
 	        	desired.normalize();
-	        
+	        	if(target.get(i).isMovementRandom()) {
+	        		isMovementRandom = true;
+	        		
+	        	}
+	        	else {
+	        		isMovementRandom = false;
+	        	}
 	        }
         }
+    	
+        if(isMovementRandom) {
+        	
+        	desired.multiply(maxSpeed);
+            // The usual steering = desired - velocity
+        Vector2D steer = Vector2D.subtract(desired, velocity);
+        steer.x = -steer.x * rdm.nextFloat();
+        steer.y = -steer.y * rdm.nextFloat();
+        steer.limit(maxForce);
+       
+        applyForce(steer);
         
-        desired.multiply(maxSpeed);
+        }
+        
+        else {
+        	desired.multiply(maxSpeed);
         // The usual steering = desired - velocity
         Vector2D steer = Vector2D.subtract(desired, velocity);
         steer.limit(maxForce);
        
         applyForce(steer);
+        }
+        
         
         
 

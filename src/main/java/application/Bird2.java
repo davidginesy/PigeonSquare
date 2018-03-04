@@ -1,22 +1,18 @@
 package application;
 
 import java.util.List;
-import java.util.Random;
 
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-public class Bird extends AbstractBird implements Runnable {
+public class Bird2 extends AbstractBird implements Runnable {
 
 	//Message msg;
 	SharedAttractors sharedAttractors;
-	Random rdm = new Random();
-	
-	
 
 	
-	public Bird(Layer layer, Vector2D location, Vector2D velocity, Vector2D acceleration, double width, double height,SharedAttractors sharedList, double maxSpeed) {
+	public Bird2(Layer layer, Vector2D location, Vector2D velocity, Vector2D acceleration, double width, double height,SharedAttractors sharedList, double maxSpeed) {
 		super(layer, location, velocity, acceleration, width, height,  maxSpeed);
 		this.sharedAttractors = sharedList;
 	}
@@ -28,7 +24,7 @@ public class Bird extends AbstractBird implements Runnable {
 	    	rectangle.setWidth(height);
 	    	rectangle.setStroke(Color.ORANGE);
 	        rectangle.setFill(Color.BLACK);
-	    	return Utils.createArrowImageView(width, Color.GREY);
+	    	return Utils.createArrowImageView(width, Color.ORANGE);
 	    }
 
 
@@ -37,13 +33,11 @@ public class Bird extends AbstractBird implements Runnable {
 	
 	@Override
 	public void run() {
-		
 		while(true) {
 			//List<Bird> allBird = sharedAttractors.getBirds();
-				List<Attractor> allAttractors = sharedAttractors.getAttractors();
-				seek(allAttractors);
-				move();
-			
+			List<Attractor> allAttractors = sharedAttractors.getAttractors();
+			seek(allAttractors);
+			move();
 			try {
 				
 				
@@ -53,9 +47,9 @@ public class Bird extends AbstractBird implements Runnable {
 				
 			} catch (Exception e) {
 				e.printStackTrace();
-			}
-			}
+			}	
 		}
+		
 		
 	}
 		
@@ -66,4 +60,4 @@ public class Bird extends AbstractBird implements Runnable {
 		
 	
 
-
+}

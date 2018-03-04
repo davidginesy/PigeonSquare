@@ -1,8 +1,8 @@
 package application;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
@@ -10,10 +10,17 @@ import javafx.scene.shape.Circle;
 
 public class Attractor extends Sprite {
 	
+	Random rdm = new Random();
+	boolean isMovementRandom = false;
+	long start;
 	long millisStart = Calendar.getInstance().getTimeInMillis();
 
     public Attractor(Layer layer, Vector2D location, Vector2D velocity, Vector2D acceleration, double width, double height) {
         super(layer, location, velocity, acceleration, width, height);
+        if(Math.abs(rdm.nextFloat() - rdm.nextFloat()) < 0.15) {
+        	start = System.currentTimeMillis();
+        	isMovementRandom = true;
+        }
     }
 
     @Override
@@ -51,6 +58,10 @@ public class Attractor extends Sprite {
        
         return false; 
 
+    }
+    public boolean isMovementRandom() {
+    	if(isMovementRandom && System.currentTimeMillis() - start > 1000) isMovementRandom = false;
+    	return isMovementRandom;
     }
 
 

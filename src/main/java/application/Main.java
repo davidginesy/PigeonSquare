@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -18,7 +15,7 @@ import javafx.stage.Stage;
 public class Main extends Application /*implements Runnable*/{
 
     static Random random = new Random();
-    boolean isMovementRandom = false;
+    
     long start;
     long elapsedTimeMillis;
     long lifeTime =1500;
@@ -27,7 +24,7 @@ public class Main extends Application /*implements Runnable*/{
     
     List<Attractor> allAttractors = new ArrayList<>();
     List<Bird> allBird = new ArrayList<>();
-    SharedAttractors sharedList = new SharedAttractors(allAttractors, allBird);
+    SharedAttractors sharedList = new SharedAttractors(allAttractors);
 
     AnimationTimer gameLoop;
 
@@ -141,6 +138,7 @@ public class Main extends Application /*implements Runnable*/{
 					
 					allBird.forEach(Sprite::display);
 			        allAttractors.forEach(Sprite::display);
+			        
 					for(int i = 0; i<allAttractors.size(); i++) {
 						
 						if(allAttractors.get(i).checkEaten(allBird)||(Calendar.getInstance().getTimeInMillis()-allAttractors.get(i).millisStart)>lifeTime) {
@@ -281,7 +279,6 @@ public class Main extends Application /*implements Runnable*/{
         }*/
         scene.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
             addAttractors(e.getX(), e.getY());
-            if(random.nextFloat() < 0.4) isMovementRandom = true;
             start = System.currentTimeMillis();
         });
     }

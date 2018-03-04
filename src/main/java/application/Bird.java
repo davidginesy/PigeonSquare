@@ -1,13 +1,15 @@
 package application;
 
 import java.util.List;
-
-import org.omg.CORBA.SystemException;
+import java.util.Random;
 
 public class Bird extends AbstractBird implements Runnable {
 
 	//Message msg;
 	SharedAttractors sharedAttractors;
+	Random rdm = new Random();
+	
+	
 
 	
 	public Bird(Layer layer, Vector2D location, Vector2D velocity, Vector2D acceleration, double width, double height,SharedAttractors sharedList) {
@@ -21,11 +23,13 @@ public class Bird extends AbstractBird implements Runnable {
 	
 	@Override
 	public void run() {
+		
 		while(true) {
 			//List<Bird> allBird = sharedAttractors.getBirds();
-			List<Attractor> allAttractors = sharedAttractors.getAttractors();
-			seek(allAttractors);
-			move();
+				List<Attractor> allAttractors = sharedAttractors.getAttractors();
+				seek(allAttractors);
+				move();
+			
 			try {
 				
 				
@@ -35,7 +39,8 @@ public class Bird extends AbstractBird implements Runnable {
 				
 			} catch (Exception e) {
 				e.printStackTrace();
-			}	
+			}
+			}
 		}
 		
 		/*synchronized(msg.allAttractors) {
@@ -66,4 +71,4 @@ public class Bird extends AbstractBird implements Runnable {
 		
 	
 
-}
+
